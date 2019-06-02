@@ -1,0 +1,14 @@
+td,th{
+	min-width: 200px;
+	vertical-align: middle !important;/*/css сасать/*/
+}
+table{
+	text-align: center !important;
+	
+}
+.overflow-table{
+	width: 100%;
+	overflow-x: scroll;
+	border:1px solid #dee2e6;
+	margin: 0;
+}

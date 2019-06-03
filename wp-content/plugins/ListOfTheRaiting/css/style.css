@@ -12,3 +12,7 @@ table{
 	border:1px solid #dee2e6;
 	margin: 0;
 }
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before{
+	background-color: #28a745 !important;
+}

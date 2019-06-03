@@ -48,7 +48,8 @@ function myplugin_activate() {
 		  `date` date DEFAULT NULL,
 		  `number` int(11) DEFAULT NULL,
 		  `original` text DEFAULT NULL,
-		  `id_specialty` int(11) DEFAULT NULL
+		  `id_specialty` int(11) DEFAULT NULL,
+		  `age_speciality` text DEFAULT NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		"; 
 	$wpdb->dbh->query($sql);
@@ -126,15 +127,16 @@ function register_my_custom_menu_page(){
 		);
 }
 
-function admin_view() {
+function admin_view()
+{
 	global $wpdb;
 	?>
 	<link rel="stylesheet" type="text/css" href="<?= plugins_url() ?>/ListOfTheRaiting/css/bootstrap-4_0_0.css">
 	<link rel="stylesheet" type="text/css" href="<?= plugins_url() ?>/ListOfTheRaiting/css/style.css">
 
-<div class="container-fluid mt-5" >
+<div class="container mt-5" >
 	<div class="row">
-		<div class="col-lg-9">
+		<div class="col-lg-9 mt-4">
 			<table class="table table-bordered">
 			  <thead>
 			    <tr>
@@ -173,30 +175,15 @@ function admin_view() {
 			    </li>
 			  </ul>
 			</nav>
-			<!-- <div class="overflow-table mt-3">
-				<table class="table table-bordered">
-				  <thead>
-				    <tr>
-				      <th scope="col">№</th>
-				      <th scope="col">ФИО</th>
-				      <th scope="col">Дата</th>
-				      <th scope="col">Аттестат</th>
-				      <th scope="col">Специальность</th>
-				      <th scope="col">На базе скольки классов</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <td><input type="text" class="form-control" id="add_number"></td>
-				      <td><input type="text" class="form-control" id="add_fio"></td>
-				      <td><input type="date" class="form-control" id="add_date"></td>
-				      <td><input type="text" class="form-control" id="add_original"></td>
-				    </tr>
-				  </tbody>
-				</table>
-			</div> -->
+
+
+            <div class="add_excel">
+                <label class="btn btn-success" for="excel_file">Загрузить Excel файл</label>
+                <input type="file" hidden id="excel_file" onchange="file_excel('<?= plugins_url() ?>/ListOfTheRaiting/')">
+            </div>
+
 			<div class="row">
-				<div class="col-lg-6">
+				<div class="col-lg-6 text-center mt-4">
 					<table class="table table-bordered">
 					  <thead>
 					    <tr>
@@ -207,18 +194,17 @@ function admin_view() {
 					    <tr>
 					      <td>
 					      	<div class="form ">
-					      		<input type="text" class="form-control" placeholder="ФИО">
-					      		<input type="date" class="form-control mt-3">
+					      		<input type="text" class="form-control" placeholder="ФИО" id="fio_abitur" value="ФИО">
+					      		<input type="date" class="form-control mt-3" id="date_abitur">
 					      		<select name="change_specialty" id="change_specialty" class="form-control mt-3" onchange="switch_age()">
 					      			<option value="" selected="">Выберете специальность</option>
 					      			<?php
 						      			$result = $wpdb->dbh->query("SELECT * FROM `lotr_specialty`");
 						      			if($result->num_rows > 0)
 						      			{
-						      				while ($po = $result->fetch_assoc()) {
-						      					echo "
-						      					<option data-count = '{$po['age']}' value = '{$po['id']}'>{$po['name']}</option>
-						      					";
+						      				while ($po = $result->fetch_assoc())
+                                            {
+						      					echo "<option data-count = '{$po['age']}' value = '{$po['id']}'>{$po['name']}</option>";
 						      				}
 						      			}
 					      			?>
@@ -230,9 +216,9 @@ function admin_view() {
 					    </tr>
 					  </tbody>
 					</table>
-					<button class="btn btn-success" onclick="add_fucking_scoolboy()">Добавить абитуриента</button>
+					<button class="btn btn-success" onclick="add_abitur('<?= plugins_url() ?>/ListOfTheRaiting/')">Добавить абитуриента</button>
 				</div>
-				<div class="col-lg-6">
+				<div class="col-lg-6 mt-4">
 					<table class="table table-bordered">
 					  <thead>
 					    <tr>
@@ -243,25 +229,28 @@ function admin_view() {
 					    <tr>
 					      <td>
 					      	<div class="form ">
-					      		<input type="text" class="form-control" placeholder="Аттестат">
-					      		<?php
-					      			$result = $wpdb->dbh->query("SELECT * FROM `lotr_lesson_name`");
-						      			if($result->num_rows > 0)
-						      			{
-						      				while ($po = $result->fetch_assoc()) {
+					      		<input type="text" class="form-control" value="1" placeholder="Аттестат" id="abitur_att">
 
-						      					echo '
-						      					<div class="form-group row mt-3 text-left">
-											    	<label for="lesson_'.$po["id"].'" class="col-sm-10 col-form-label">'.$po["lesson_name"].'</label>
-											    	<div class="col-sm-2">
-											    		<input type="" class="form-control " id="lesson_'.$po["id"].'" placeholder="">
+                                <div id="all_rating">
+                                    <?php
+                                    $result = $wpdb->dbh->query("SELECT * FROM `lotr_lesson_name`");
+                                    if($result->num_rows > 0)
+                                    {
+                                        while ($po = $result->fetch_assoc()) {
+
+                                            echo '
+						      					<div class="form-group row mt-3 text-left ml-0 mr-0">
+											    	<label for="lesson_'.$po["id"].'" class="col-sm-9 col-form-label">'.$po["lesson_name"].'</label>
+											    	<div class="col-sm-3">
+											    		<input type="" class="form-control pl-2 pr-2" id="lesson_'.$po["id"].'" data-id='.$po["id"].'>
 											    	</div>
 												</div>
 												<hr>
 						      					';
-						      				}
-						      			}	
-					      		?>
+                                        }
+                                    }
+                                    ?>
+                                </div>
 					      	</div>
 					      </td>
 					    </tr>
@@ -272,7 +261,7 @@ function admin_view() {
 			
 		</div>
 
-		<div class="col-lg-3">
+		<div class="col-lg-3 mt-4">
 			<table class="table table-bordered">
 			  <thead>
 			    <tr>
@@ -299,12 +288,12 @@ function admin_view() {
 			  <tbody>
 			    <tr>
 			      <td>
-			      	<div class="form ">
-			      		<input type="text" class="form-control" id="specialty_name" placeholder="Специальность">
+			      	<div class="form text-center">
+			      		<input type="text" class="form-control" id="specialty_name" placeholder="Специальность" value="Специальность 1">
 
-			      		<input type="text" class="form-control mt-3" id="specialty_number" placeholder="Номер специальности">
+			      		<input type="text" class="form-control mt-3" id="specialty_number" placeholder="Номер специальности" value="1">
 
-			      		<input type="text" class="form-control mt-3" id="specialty_duration" placeholder="Длительность обучения">
+			      		<input type="text" class="form-control mt-3" id="specialty_duration" placeholder="Длительность обучения" value="">
 
 			      		<input type="text" class="form-control mt-3" id="specialty_count_place" placeholder="Количество мест">
 

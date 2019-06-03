@@ -1,4 +1,5 @@
-function add_lesson(link) {
+function add_lesson(link)
+{
 	if($('#lesson_name').val()!=='')
 	{
 		$.ajax({ 
@@ -11,7 +12,7 @@ function add_lesson(link) {
 				if(this.result)
 				{
 					$('#lesson_name').val('');
-					$('#lesson_name').css('border','1px solid #f5f5f5');
+					$('#lesson_name').css('border','1px solid #ddd');
 				} 
 				else
 				{
@@ -21,35 +22,36 @@ function add_lesson(link) {
 		}) 
 	}
 
-}function add_specialty(link) {
+}function add_specialty(link)
+{
 
 	if($('#specialty_name').val()!=='' && $('#specialty_number').val()!=='' && ($('#9_age')[0].checked || $('#11_age')[0].checked || $('#8_age')[0].checked) && $('#specialty_duration').val()!=='' && $('#specialty_count_place').val()!=='')
 	{
 		this.age = "";
 		if($('#9_age')[0].checked)
 		{
-			this.age+= "На базе 9 классов";
+			this.age+= "9";
 		}
 		if($('#11_age')[0].checked)
 		{
 			if(this.age == "")
 			{
-				this.age+= "На базе 11 классов";
+				this.age+= "11";
 			}
 			else
 			{
-				this.age+= " ,На базе 11 классов";
+				this.age+= " ,11";
 			}
 		}
 		if($('#8_age')[0].checked)
 		{
 			if(this.age == "")
 			{
-				this.age+= "На базе 8 классов";
+				this.age+= "8";
 			}
 			else
 			{
-				this.age+= " ,На базе 8 классов";
+				this.age+= " ,8";
 			}
 		}
 		
@@ -72,9 +74,9 @@ function add_lesson(link) {
 				if(this.result)
 				{
 					$('#specialty_name').val('');
-					$('#specialty_name').css('border','1px solid #f5f5f5');
+					$('#specialty_name').css('border','1px solid #ddd');
 					$('#specialty_number').val('');
-					$('#specialty_number').css('border','1px solid #f5f5f5');
+					$('#specialty_number').css('border','1px solid #ddd');
 					$('#specialty_duration').val('');
 					$('#specialty_count_place').val('');
 				} 
@@ -88,17 +90,109 @@ function add_lesson(link) {
 	}
 
 }
-function switch_age() {
-	//console.log($('#change_specialty').find('option:selected').attr('data-count'));
-	this.data = $('#change_specialty').find('option:selected').attr('data-count').split(',');
+function switch_age()
+{
+	this.data = $('#change_specialty').find('option:selected').attr('data-count');
 	this.append = "";
-	this.data.forEach(item=>{
-		this.append+=`<option value="${item}" >${item}</option>`;
-	});
-	$('#change_specialty_age').html(this.append);
 
-	//console.log(this.data);
+	if(typeof this.data!=="undefined")
+	{
+		this.data=this.data.split(',');
+		this.data.forEach(item=>
+		{
+			this.append+=`<option value="${item}" >На базе ${item} классов</option>`;
+		});
+
+		$('#change_specialty_age').html(this.append);
+	}
+
 }
-function add_fucking_scoolboy() {
-	alert(123);
+async function add_abitur(link)
+{
+	if(
+		$('#fio_abitur').val()!=''
+		&&
+		$('#date_abitur').val()!=''
+		&&
+		$('#change_specialty').val()!=''
+		&&
+		$('#change_specialty_age').val()!=''
+		&&
+		$('#abitur_att').val()!=''
+	)
+	{
+		await $.ajax({
+			type:"POST",
+			url:link+'php/add_abitur.php',
+			data:
+			{
+				"fio":$('#fio_abitur').val(),
+				"date":$('#date_abitur').val(),
+				"original":$('#abitur_att').val(),
+				"id_specialty":$('#change_specialty').val(),
+				"age_specialty":$('#change_specialty_age').val(),
+			},
+			success:result=>
+			{
+				this.data_user=JSON.parse(result);
+				if(this.data_user!==false)
+				{
+					$('#fio_abitur').css('border','1px solid #ddd');
+
+					this.data_rait=[];
+
+
+					for (let i=0;i<$('#all_rating input').length;i++)
+					{
+						let item=$('#all_rating input')[i];
+						this.data_rait.push({"val":item.value,"id":item.getAttribute('data-id')});
+					}
+
+
+
+					$.ajax({
+						type:"POST",
+						url:link+'php/add_rating.php',
+						data:{"id":result,"rating":this.data_rait},
+						success:result=>
+						{
+							console.log(result);
+
+							// let exel=new ActiveXObject("E")
+
+						},
+					});
+
+				}
+				else
+				{
+					$('#fio_abitur').css('border','1px solid red');
+				}
+			},
+		});
+	}
 }
+
+
+
+
+async function file_excel(link)
+{
+
+	this.formData=new FormData();
+
+	this.formData.append('file',$('#excel_file')[0].files[0]);
+
+	await $.ajax({
+		type:"POST",
+		url:link+'php/add_excel.php',
+		processData: false,
+		contentType: false,
+		data:this.formData,
+		success:result=>{
+			console.log(result);
+		}
+	});
+}
+
+// $('#id').bind(')

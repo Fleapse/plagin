@@ -1,6 +1,8 @@
 <?php
 include_once '../connect.php';
 
+//Добавление абитуриента, при нажатие кнопки на форме
+
 if(!empty($_POST))
 {
     $result=$wpdb->dbh->query("SELECT * FROM `lotr_enrollee` WHERE `fio`='{$_POST['fio']}'");

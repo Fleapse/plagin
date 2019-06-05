@@ -1,6 +1,9 @@
 <?php
 include_once '../connect.php';
 
+// При пост запросе с передачей параметра массива оценок , пробегая через весь этот массив я добавляю данные в бд
+
+
 if(!empty($_POST))
 {
     foreach ($_POST['rating'] as $key=>$value)

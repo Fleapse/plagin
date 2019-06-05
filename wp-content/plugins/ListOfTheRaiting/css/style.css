@@ -1,18 +1,103 @@
-td,th{
-	min-width: 200px;
+td,th
+{
+    padding: 7px !important;
+	min-width: 150px;
 	vertical-align: middle !important;/*/css сасать/*/
 }
-table{
+table
+{
 	text-align: center !important;
-	
+
 }
-.overflow-table{
+.overflow-table
+{
 	width: 100%;
 	overflow-x: scroll;
 	border:1px solid #dee2e6;
 	margin: 0;
 }
 
-.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before{
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before
+{
 	background-color: #28a745 !important;
+}
+
+
+.scroll
+{
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.scroll::-webkit-scrollbar
+{
+    appearance: none;
+    height: 8px;
+    background: #f5f5f5;
+}
+
+.scroll::-webkit-scrollbar-thumb
+{
+    width: 30px;
+    height: 30px;
+    background: #25993f;
+}
+
+
+.tab-pane{
+    margin-right: 10px !important;
+}
+
+
+
+.max-w-1300
+{
+    max-width: 1400px !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link
+{
+    background-color: transparent;
+    color: #333;
+    border-bottom: 1px solid #218838;
+    border-radius: 0px;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link:focus,.nav-pills .nav-link.active, .nav-pills .show > .nav-link:active,.nav-pills .nav-link:focus
+{
+    box-shadow: none;
+    outline: none;
+}
+
+.nav-pills .nav-link
+{
+    color: #979797;
+}
+
+input[type=checkbox]:focus
+{
+    border-color: transparent !important;
+    box-shadow: 0 0 0 !important;
+}
+
+
+.custom-control-input:focus ~ .custom-control-label::before
+{
+    box-shadow: 0 0 0 !important;
+}
+
+
+
+
+.flag_sort:after
+{
+    content: ' ↑';
+    font-size: 20px;
+    color: #000000;
+}
+
+.flag_non_sort:after{
+    content: ' ↓';
+    font-size: 20px;
+    color: #000000;
 }

@@ -1,4 +1,4 @@
-function add_lesson(link)
+function add_lesson(link)//Добавление урока, при нажатие на кнопку, принемает ссылку кторую я передаю в index.php
 {
 	if($('#lesson_name').val()!=='')
 	{
@@ -22,11 +22,12 @@ function add_lesson(link)
 		}) 
 	}
 
-}function add_specialty(link)
+}function add_specialty(link)//Добавление специальности, при нажатие на кнопку, принемает ссылку кторую я передаю в index.php
 {
 
 	if($('#specialty_name').val()!=='' && $('#specialty_number').val()!=='' && ($('#9_age')[0].checked || $('#11_age')[0].checked || $('#8_age')[0].checked) && $('#specialty_duration').val()!=='' && $('#specialty_count_place').val()!=='')
 	{
+	    //Проверка на выбранный n классов
 		this.age = "";
 		if($('#9_age')[0].checked)
 		{
@@ -107,6 +108,8 @@ function switch_age()
 	}
 
 }
+
+//Функция добавить абитуриента при нажатие на кнопку, в ней идет проверка на не пустоту и уникальнсть абитуриента
 async function add_abitur(link)
 {
 	if(
@@ -150,16 +153,28 @@ async function add_abitur(link)
 
 
 
+					// Добавление оценок абитуриента
 					$.ajax({
 						type:"POST",
 						url:link+'php/add_rating.php',
 						data:{"id":result,"rating":this.data_rait},
 						success:result=>
 						{
-							console.log(result);
+							$('#fio_abitur').val('');
 
-							// let exel=new ActiveXObject("E")
+							$('#date_abitur').val('');
 
+							$('#change_specialty').val('');
+
+							$('#change_specialty_age').val('');
+
+							$('#abitur_att').val('');
+
+
+							for (let i=0;i<$('#all_rating input').length;i++)
+							{
+								$('#all_rating input')[i].value="";
+							}
 						},
 					});
 
@@ -174,8 +189,7 @@ async function add_abitur(link)
 }
 
 
-
-
+// Передача файла в пхп часть , при изменении данных в инпуте фалй
 async function file_excel(link)
 {
 
@@ -190,9 +204,94 @@ async function file_excel(link)
 		contentType: false,
 		data:this.formData,
 		success:result=>{
-			console.log(result);
+			// console.log(result);
 		}
 	});
 }
+
+
+
+
+
+
+
+
+let vue = new Vue({
+	el:'#app',
+	data:{
+		data_abitur:'',
+		data_lesson:'',
+		flag_sort:false,
+	},
+	methods:
+	{
+		async get_abitur()//Взятие всех данных абитуриентов
+		{
+			await $.ajax({
+				type:"GET",
+				url:link_data+'php/get_abitur.php',
+				success:result=>
+				{
+					this.mas=JSON.parse(result);
+
+				}
+			});
+
+			return this.mas;
+		},
+		async get_lesson()//Взятие всех данных урока
+		{
+			await $.ajax({
+				type:"GET",
+				url:link_data+'php/get_header_table.php',
+				success:result=>
+				{
+					this.mas=JSON.parse(result);
+
+
+				}
+			});
+
+			return this.mas;
+		},
+		My_sort(param)//Сортировка при нажатие на средний балл
+		{
+			this.flag_sort=!this.flag_sort;
+
+			if(this.flag_sort)
+			{
+				this.data_abitur.sort((a,b)=>
+				{
+					return b[2]-a[2];
+				});
+			}
+			else{
+				this.data_abitur.sort((a,b)=>
+				{
+					return a[2]-b[2];
+				});
+			}
+
+			// console.log(this.data_abitur);
+		},
+
+		async reLoadData()//Кнопка однавления данных
+		{
+			this.data_abitur=await this.get_abitur();
+			this.data_lesson=await this.get_lesson();
+		}
+	},
+	async created()
+	{
+		this.data_abitur=await this.get_abitur();
+		this.data_lesson=await this.get_lesson();
+
+	},
+});
+
+
+
+
+
 
 // $('#id').bind(')

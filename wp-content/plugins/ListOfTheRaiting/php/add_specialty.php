@@ -1,7 +1,9 @@
 <?php
 include_once '../connect.php';
 
-// print_r($wpdb->dbh); 
+// При пост запросе с передачей параметра специальности номер и специльаности имя, я провереяю на существование такого номера
+// специальности , и если такой не существует то добавляю
+
 if(!empty($_POST)) 
 { 
 	$sql="SELECT * FROM `lotr_specialty` WHERE `name`='{$_POST['specialty_name']}' AND `number`='{$_POST['specialty_number']}'";

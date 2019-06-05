@@ -1,12 +1,13 @@
 <?php
 include_once '../connect.php';
-include dirname(__FILE__).'\excel\PHPExcel.php';
+include dirname(__FILE__).'\excel\PHPExcel.php';//Библиотека добавления и работы с excel
 
 
 if(!empty($_FILES))
 {
-//    print_r(dirname(__FILE__).'\excel\files_excel\\'.$_FILES['file']['name']);
 
+
+    //Загрузка файла эксель.
     move_uploaded_file($_FILES['file']['tmp_name'],dirname(__FILE__).'\excel\files_excel\\'.$_FILES['file']['name']);
 
 
@@ -22,10 +23,15 @@ if(!empty($_FILES))
 
 
 
-    //print_r($wpdb->dbh);
+
+    // Сделай print_r ( $result ), там все понятно будет, что написано ниже
+
+
+
+    //Добавлиение уроков
     for ($i=6;$i<count($result[0])-2;$i++)
     {
-//
+
         $sql="SELECT * FROM `lotr_lesson_name` WHERE `lesson_name`='{$result[0][$i]}'";
         $result_lesson=$wpdb->dbh->query($sql);
 
@@ -37,13 +43,14 @@ if(!empty($_FILES))
     }
 
 
-//    print_r($result);
 
 
+
+    //Доабвление юзеров
     $error=[];
     for ($j=1;$j<count($result);$j++)
     {
-        $sql="SELECT * FROM `lotr_enrollee` WHERE `fio`='{$result[$j][1]}'";
+        $sql="SELECT * FROM `lotr_enrollee` WHERE `fio`='{$result[$j][1]}'";//Проверка на сущесвтование фио при переборе $result;
         $result_entrolle=$wpdb->dbh->query($sql);
         if($result_entrolle->num_rows===0)
         {
@@ -101,7 +108,6 @@ if(!empty($_FILES))
         echo json_encode($error,256 | 64);
     }
 
-//    unlink(dirname(__FILE__).'\excel\files_excel\\'.$_FILES['file']['name']);
 }
 
 ?>

@@ -1,7 +1,8 @@
 <?php
 include_once '../connect.php';
 
-// print_r($wpdb->dbh); 
+// При пост запросе с передачей параметра название урока, я проверяю на существование и если такого не нашел то добавляем
+
 if(!empty($_POST['lesson_name'])) 
 { 
 	$sql="SELECT * FROM `lotr_lesson_name` WHERE `lesson_name`='{$_POST['lesson_name']}'";
